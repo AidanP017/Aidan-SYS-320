@@ -1,26 +1,26 @@
 # Get login and logoff records from Windows Events
-#Get-EventLog System -source Microsoft-Windows-Winlogon
+Get-EventLog System -source Microsoft-Windows-Winlogon
 #________________________________________________________________________________________________#
 
 # Get login and logoff records from Windows Events and save to a variable
-#$loginouts = Get-EventLog System -source Microsoft-Windows-Winlogon -After (Get-Date).AddDays(-14)
+$loginouts = Get-EventLog System -source Microsoft-Windows-Winlogon -After (Get-Date).AddDays(-14)
 # Create an empty array to fill customly
-#$loginoutsTable = @()
-#for($i=0; $i -lt $loginouts.Count; $i++){
+$loginoutsTable = @()
+for($i=0; $i -lt $loginouts.Count; $i++){
 # Create an event property value
-#$event = ""
-#if($loginouts[$i].InstanceId -eq 7001) {$event="Logon"}
-#if($loginouts[$i].InstanceId -eq 7002) {$event="Logoff"}
+$event = ""
+if($loginouts[$i].InstanceId -eq 7001) {$event="Logon"}
+if($loginouts[$i].InstanceId -eq 7002) {$event="Logoff"}
 # Create a user property value
-#$user = $loginouts[$i].ReplacementStrings[1]
+$user = $loginouts[$i].ReplacementStrings[1]
 # Adding each new line (in form of a custom object) to our empty array
-#$loginoutsTable += [pscustomobject]@{"Time" = $loginouts[$i].TimeGenerated; `
-#                                       "Id" = $loginouts[$i].InstanceId; `
-#                                    "Event" = $event; `
-#                                     "User" = $user;
-#                                     }
-#}
-#$loginoutsTable
+$loginoutsTable += [pscustomobject]@{"Time" = $loginouts[$i].TimeGenerated; `
+                                       "Id" = $loginouts[$i].InstanceId; `
+                                    "Event" = $event; `
+                                     "User" = $user;
+                                     }
+}
+$loginoutsTable
 #__________________________________________________________________________________________________________________________________________________________________________#
 
 # Use System Security Principle SecurityIdentifier to translate the user Id to username.
@@ -84,10 +84,10 @@ function Obtain-Logs {
 # Return the results
 return $loginoutsTable
 }
-## Define the user input process
-#$days = Read-Host "Enter the number of days"
-#$result = Obtain-Logs -Days $days
-#$result | Format-Table -AutoSize
+# Define the user input process
+$days = Read-Host "Enter the number of days"
+$result = Obtain-Logs -Days $days
+$result | Format-Table -AutoSize
 #__________________________________________________________________________________________________________#
 
 # Turns the script into a function that obtains the computer's start and shutdown times.
